@@ -8,7 +8,13 @@ import uuid;
 import datetime;
 
 import from models { Claim, Policy, Appeal, DenialReason, AppealStrength, Contradiction }
-import from orchestrator { plan_and_generate_appeal }
+import from tools {
+    extract_denial_reason,
+    extract_relevant_clauses,
+    find_contradictions,
+    assess_appeal_strength,
+    draft_appeal_letter
+}
 
 
 # ---- Walker: full agentic pipeline -------------------------------------
@@ -60,19 +66,23 @@ walker:pub submit_claim {
         here ++> claim;
         here ++> policy;
 
-        # 2. Let the agent plan and execute the appeal end-to-end.
-        #    THIS is the agentic call — the LLM picks tool order.
-        letter = plan_and_generate_appeal(
-            denial_text=self.denial_text,
-            policy_text=self.policy_text,
-            clinical_record=self.clinical_record,
+        # 2. Run the 5 tools sequentially (Featherless can't handle the
+        #    agentic ReAct loop — same compromise as main.jac).
+        reason = extract_denial_reason(self.denial_text);
+        clauses = extract_relevant_clauses(self.policy_text, reason);
+        contradictions = find_contradictions(self.denial_text, self.clinical_record, clauses);
+        strength = assess_appeal_strength(contradictions);
+        letter = draft_appeal_letter(
             patient_name=self.patient_name,
             member_id=self.member_id,
             claim_number=self.claim_number,
             date_of_service=self.date_of_service,
             cpt_code=self.cpt_code,
             billed_amount=self.billed_amount,
-            plan_name=self.plan_name
+            plan_name=self.plan_name,
+            denial_reason=reason,
+            contradictions=contradictions,
+            clinical_record=self.clinical_record
         );
 
         # 3. Persist the resulting Appeal.
@@ -80,9 +90,14 @@ walker:pub submit_claim {
             appeal_id=f"APL-{uuid.uuid4().hex[:8]}",
             claim_id=claim.claim_id,
             policy_id=policy.policy_id,
-            denial_reason=DenialReason.OTHER,           # tracked at letter level
-            strength=AppealStrength.MODERATE,
-            contradictions_json="[]",
+            denial_reason=reason,
+            strength=strength,
+            contradictions_json=json.dumps(
+                [{"denial_quote": c.denial_quote,
+                  "policy_quote": c.policy_quote,
+                  "clause_section": c.clause_section,
+                  "explanation": c.explanation} for c in contradictions]
+            ),
             letter_subject=letter.subject,
             letter_body=f"{letter.salutation}\n\n{letter.body}\n\n{letter.closing}",
             citations_json=json.dumps(letter.citations),
