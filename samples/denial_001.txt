@@ -1,0 +1,38 @@
+BlueShield Health Plans
+Member Services
+PO Box 91723
+Hartford, CT 06154
+
+May 2, 2026
+
+Patient:        Jordan A. Reyes
+Member ID:      BSH-44892-01
+Claim Number:   CLM-2026-0418-9921
+Date of Service: April 18, 2026
+Provider:       Northbrook Sleep Medicine Associates
+CPT Code:       95810 (Polysomnography, sleep study, attended)
+Billed Amount:  $3,847.00
+
+Dear Mr. Reyes,
+
+We have completed our review of the above claim submitted on your behalf.
+After review, we have determined that the services rendered are NOT
+COVERED under your benefit plan for the following reason:
+
+  DENIAL CODE: M-114 — NOT MEDICALLY NECESSARY
+  The attended in-lab polysomnography is considered not medically
+  necessary because the clinical documentation submitted does not
+  establish that home sleep apnea testing (HSAT) was attempted and
+  failed prior to the in-lab study. Per our clinical policy, in-lab
+  polysomnography is reserved for cases where HSAT is contraindicated
+  or has been attempted and returned a non-diagnostic result.
+
+If you disagree with this decision, you have the right to file an
+appeal within 180 days of receipt of this letter. Appeals must be
+submitted in writing and must include any additional clinical
+documentation supporting medical necessity.
+
+Sincerely,
+M. Thornton, RN
+Clinical Review Specialist
+BlueShield Health Plans

@@ -1,0 +1,9 @@
+.venv/
+.env
+__pycache__/
+*.pyc
+.jac/
+.jac_gen/
+__jac_gen__/
+*.session
+.DS_Store

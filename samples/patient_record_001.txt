@@ -1,0 +1,22 @@
+CLINICAL SUMMARY — Jordan A. Reyes (DOB redacted)
+Northbrook Sleep Medicine Associates
+Referring physician: Dr. Lila Okonkwo, MD — Board-Certified Sleep Medicine
+
+History:
+  - 4-year history of NYHA Class III congestive heart failure
+    (LVEF 28% on most recent echo, Feb 2026).
+  - Chronic daily opioid therapy (oxycodone ER 20mg BID) for
+    post-laminectomy neuropathic pain, stable regimen since 2023.
+  - Witnessed apneas, gasping arousals, refractory daytime
+    somnolence (Epworth Sleepiness Scale 18/24).
+
+Indication for in-lab PSG (CPT 95810):
+  Per AASM 2017 clinical practice guideline and BlueShield plan
+  Section 7.2(i), home sleep apnea testing is unreliable in patients
+  with NYHA Class III CHF AND in patients on chronic opioid therapy
+  due to elevated rates of central sleep apnea and complex
+  sleep-disordered breathing patterns that HSAT cannot reliably
+  detect.
+
+Order date: April 10, 2026
+Study performed: April 18, 2026

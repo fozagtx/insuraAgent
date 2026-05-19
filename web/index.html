@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Insurance Appeal Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&family=Space+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* fonts — Instrument family */
+    --font-sans: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+    --font-serif: 'Instrument Serif', Georgia, serif;
+    --font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
+
+    /* brand — navy + blue + sky */
+    --navy: #002259;
+    --blue-700: #2670DC;
+    --blue-600: #155DFC;
+    --blue-900: #0042AB;
+    --blue-500: #79ADF8;
+    --blue-300: #BDD7FF;
+    --blue-200: #D3E8FF;
+    --blue-150: #D7E7FE;
+    --blue-100: #E9F3FF;
+
+    --neutral-50: #F7F7F9;
+    --neutral-200: #F4F9FF;
+    --neutral-300: #E0E8F2;
+    --neutral-500: #8F9FB8;
+    --neutral-600: #777F8B;
+    --neutral-700: #5F6B7C;
+    --neutral-800: #3F4A61;
+    --neutral-900: #002259;
+
+    --red-400: #FF6568;
+    --red-500: #FB2C36;
+    --red-600: #E40014;
+    --skeleton: #EFF4F9;
+    --skeleton-dark: #E5ECF3;
+
+    /* gradients */
+    --bg-sky: linear-gradient(rgb(189, 215, 255) 0%, rgb(255, 255, 255) 39.45%);
+    --cta-gradient: linear-gradient(rgb(0, 68, 185) 5.5%, rgb(0, 116, 236) 35%, rgb(78, 177, 255) 65%, rgb(173, 217, 255) 95%);
+
+    /* radii */
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 16px;
+    --r-xl: 32px;
+
+    /* neumorphic shadows */
+    --shadow-card: rgba(255,255,255,0.75) -4px -4px 6px 0px inset, rgba(255,255,255,0.75) 4px 4px 6px 0px inset;
+    --shadow-search: rgba(235,243,255,0.75) -2px -2px 4px 0px inset, rgba(235,243,255,0.75) 2px 2px 4px 0px inset;
+
+    --transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background-image: var(--bg-sky);
+    background-attachment: fixed;
+    color: var(--navy);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    letter-spacing: -0.5px;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  header { margin-bottom: 36px; }
+  header .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--blue-700);
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(36px, 4.8vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin: 0 0 12px;
+    color: var(--navy);
+    font-weight: 400;
+  }
+  header p {
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--neutral-700);
+    max-width: 640px;
+    margin: 0;
+  }
+
+  /* 2-column layout: inputs | output */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  /* neumorphic pane */
+  .pane {
+    background: var(--skeleton);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-card);
+    padding: 28px 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pane::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 100% 0%, rgba(121, 173, 248, 0.14) 0%, rgba(189, 215, 255, 0.06) 40%, transparent 70%);
+    pointer-events: none;
+  }
+  .pane > * { position: relative; }
+
+  .pane h2 {
+    margin: 0 0 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--neutral-600);
+  }
+
+  /* form fields */
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--neutral-600);
+    margin-bottom: 6px;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  input, textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    color: var(--navy);
+    border: 1px solid rgba(189, 215, 255, 0.6);
+    border-radius: var(--r-md);
+    padding: 10px 14px;
+    font: inherit;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    letter-spacing: -0.5px;
+    transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
+  }
+  input:focus, textarea:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 3px rgba(121, 173, 248, 0.18);
+  }
+  textarea {
+    resize: vertical;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  textarea.small { min-height: 100px; }
+  textarea.med { min-height: 160px; }
+
+  /* actions */
+  .actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  /* secondary button */
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--blue-700);
+    border: 1px solid rgba(189, 215, 255, 0.6);
+    border-radius: var(--r-lg);
+    padding: 11px 18px;
+    font: inherit;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.3px;
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition), transform var(--transition);
+  }
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--blue-500);
+    transform: translateY(-1px);
+  }
+
+  /* primary CTA — 4-stop blue gradient */
+  .btn-primary {
+    background: var(--cta-gradient);
+    color: white;
+    border: none;
+    border-radius: var(--r-lg);
+    padding: 12px 22px;
+    font: inherit;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.3px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 34, 89, 0.08), 0 4px 14px rgba(38, 112, 220, 0.25);
+    transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 34, 89, 0.10), 0 6px 18px rgba(38, 112, 220, 0.32);
+  }
+  .btn-primary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* status */
+  .status {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--neutral-600);
+    flex: 1 1 100%;
+    min-height: 1.2em;
+  }
+  .status.ok   { color: var(--blue-700); }
+  .status.warn { color: var(--red-500); }
+
+  /* output pane content */
+  .empty {
+    color: var(--neutral-600);
+    padding: 60px 20px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .empty code {
+    font-family: var(--font-mono);
+    background: var(--blue-100);
+    color: var(--navy);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .subject {
+    font-weight: 600;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(189, 215, 255, 0.6);
+    border-left: 3px solid var(--blue-700);
+    border-radius: var(--r-md);
+    margin-bottom: 14px;
+    color: var(--navy);
+    font-size: 14px;
+    letter-spacing: -0.3px;
+  }
+
+  pre.letter {
+    background: white;
+    border: 1px solid var(--neutral-300);
+    border-radius: var(--r-md);
+    padding: 18px 20px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--navy);
+    margin: 0;
+  }
+
+  .citations {
+    margin-top: 14px;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(189, 215, 255, 0.6);
+    border-radius: var(--r-md);
+  }
+  .citations strong {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--neutral-600);
+  }
+  .citations ul {
+    margin: 8px 0 0;
+    padding-left: 20px;
+  }
+  .citations li {
+    margin-bottom: 4px;
+    color: var(--neutral-700);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  footer {
+    color: var(--neutral-600);
+    font-size: 12px;
+    margin-top: 56px;
+    text-align: center;
+    font-family: var(--font-mono);
+  }
+  footer a { color: var(--blue-700); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">insurance appeal · agent</div>
+    <h1>Turn a denial letter into a winning appeal.</h1>
+    <p>Paste the denial, the policy, and the clinical record. An agent reads all three, finds the contradictions, and drafts the appeal letter with citations.</p>
+  </header>
+
+  <main class="layout">
+    <!-- INPUT PANE -->
+    <section class="pane">
+      <h2>Claim Inputs</h2>
+
+      <div class="row">
+        <div class="field">
+          <label>Patient name</label>
+          <input id="f_patient" value="Jordan A. Reyes" />
+        </div>
+        <div class="field">
+          <label>Member ID</label>
+          <input id="f_member" value="BSH-44892-01" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Claim number</label>
+          <input id="f_claim" value="CLM-2026-0418-9921" />
+        </div>
+        <div class="field">
+          <label>Date of service</label>
+          <input id="f_dos" value="2026-04-18" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>CPT code</label>
+          <input id="f_cpt" value="95810" />
+        </div>
+        <div class="field">
+          <label>Billed amount (USD)</label>
+          <input id="f_amount" value="3847.00" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Plan name</label>
+        <input id="f_plan" value="BlueShield PPO Gold 2026" />
+      </div>
+
+      <div class="field">
+        <label>Denial letter (paste full text)</label>
+        <textarea id="f_denial" class="med"></textarea>
+      </div>
+      <div class="field">
+        <label>Policy excerpt (paste relevant sections)</label>
+        <textarea id="f_policy" class="med"></textarea>
+      </div>
+      <div class="field">
+        <label>Clinical record (optional)</label>
+        <textarea id="f_record" class="small"></textarea>
+      </div>
+
+      <div class="actions">
+        <button id="btn_sample" class="btn-secondary">Load sample claim</button>
+        <button id="btn_submit" class="btn-primary">Generate appeal</button>
+        <span id="status" class="status"></span>
+      </div>
+    </section>
+
+    <!-- OUTPUT PANE -->
+    <section class="pane">
+      <h2>Generated Appeal</h2>
+      <div id="output">
+        <div class="empty">
+          Generated letter, citations, and appeal ID will appear here.<br><br>
+          Start the server with <code>jac start walkers.jac --port 8000</code><br>then click <em>Generate appeal</em>.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Powered by <a href="https://featherless.ai/">Featherless.AI</a>
+  </footer>
+</div>
+
+<script>
+  const API = "http://localhost:8000";
+
+  // Sample text bundled inline so the demo works offline-of-disk.
+  const SAMPLE = {
+    patient: "Jordan A. Reyes",
+    member:  "BSH-44892-01",
+    claim:   "CLM-2026-0418-9921",
+    dos:     "2026-04-18",
+    cpt:     "95810",
+    amount:  "3847.00",
+    plan:    "BlueShield PPO Gold 2026",
+    denial: `BlueShield Health Plans — May 2, 2026
+
+Claim CLM-2026-0418-9921 for in-lab polysomnography (CPT 95810) is
+DENIED. Reason M-114: NOT MEDICALLY NECESSARY. Clinical documentation
+does not establish that home sleep apnea testing (HSAT) was attempted
+and failed prior to the in-lab study. Per our clinical policy, in-lab
+polysomnography is reserved for cases where HSAT is contraindicated or
+has been attempted and returned a non-diagnostic result.`,
+    policy: `BLUESHIELD PPO GOLD 2026 — Section 7.2
+MEDICAL NECESSITY CRITERIA FOR IN-LAB POLYSOMNOGRAPHY (CPT 95810)
+
+In-lab polysomnography is considered medically necessary when ANY of
+the following are met:
+  (i) Comorbid condition that renders HSAT unreliable, including
+      moderate-to-severe pulmonary disease, congestive heart failure
+      (NYHA Class III or IV), neuromuscular disease, or chronic opioid
+      use.
+  (ii) HSAT has been attempted and returned a non-diagnostic result.
+  (iii) Clinical suspicion of a non-respiratory sleep disorder.
+  (iv) Patient unable to operate HSAT equipment safely at home.
+
+7.3 Prior authorization is NOT required when ordered by a board-
+certified sleep medicine physician, pulmonologist, or neurologist.`,
+    record: `Patient: Jordan A. Reyes
+NYHA Class III congestive heart failure (LVEF 28% Feb 2026).
+Chronic daily opioid therapy (oxycodone ER 20mg BID) since 2023.
+Witnessed apneas, Epworth Sleepiness Scale 18/24.
+Order date: 2026-04-10  |  Study performed: 2026-04-18`
+  };
+
+  function loadSample() {
+    document.getElementById("f_patient").value = SAMPLE.patient;
+    document.getElementById("f_member").value  = SAMPLE.member;
+    document.getElementById("f_claim").value   = SAMPLE.claim;
+    document.getElementById("f_dos").value     = SAMPLE.dos;
+    document.getElementById("f_cpt").value     = SAMPLE.cpt;
+    document.getElementById("f_amount").value  = SAMPLE.amount;
+    document.getElementById("f_plan").value    = SAMPLE.plan;
+    document.getElementById("f_denial").value  = SAMPLE.denial;
+    document.getElementById("f_policy").value  = SAMPLE.policy;
+    document.getElementById("f_record").value  = SAMPLE.record;
+  }
+
+  function setStatus(msg, cls) {
+    const el = document.getElementById("status");
+    el.textContent = msg;
+    el.className = "status " + (cls || "");
+  }
+
+  async function submit() {
+    const body = {
+      patient_name:    document.getElementById("f_patient").value,
+      member_id:       document.getElementById("f_member").value,
+      claim_number:    document.getElementById("f_claim").value,
+      date_of_service: document.getElementById("f_dos").value,
+      cpt_code:        document.getElementById("f_cpt").value,
+      billed_amount:   parseFloat(document.getElementById("f_amount").value) || 0,
+      plan_name:       document.getElementById("f_plan").value,
+      denial_text:     document.getElementById("f_denial").value,
+      policy_text:     document.getElementById("f_policy").value,
+      clinical_record: document.getElementById("f_record").value
+    };
+
+    const btn = document.getElementById("btn_submit");
+    btn.disabled = true;
+    setStatus("Agent is planning and drafting... this can take 30–60 s.", "ok");
+
+    try {
+      const res = await fetch(API + "/walker/submit_claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const json = await res.json();
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || ("HTTP " + res.status));
+      }
+      // Jac walker envelope: { ok, data: { reports: [[report1, ...]] } }
+      const reports = (json.data && json.data.reports && json.data.reports[0]) || [];
+      const report = reports[0] || {};
+      render(report);
+      setStatus("Done — appeal " + (report.appeal_id || "") + " saved.", "ok");
+    } catch (e) {
+      setStatus("Error: " + e.message, "warn");
+      document.getElementById("output").innerHTML =
+        '<div class="empty">' + escape(e.message) + '</div>';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function escape(s) {
+    return (s || "").replace(/[&<>]/g, c =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  }
+
+  function render(r) {
+    const subject = escape(r.subject || "(no subject)");
+    const letter  = escape(r.letter  || "(empty letter)");
+    const cites   = (r.citations || []).map(c =>
+      "<li>" + escape(c) + "</li>").join("");
+    document.getElementById("output").innerHTML = `
+      <div class="subject">${subject}</div>
+      <pre class="letter">${letter}</pre>
+      <div class="citations">
+        <strong>Citations</strong>
+        <ul>${cites || "<li>(none returned)</li>"}</ul>
+      </div>
+    `;
+  }
+
+  document.getElementById("btn_sample").addEventListener("click", loadSample);
+  document.getElementById("btn_submit").addEventListener("click", submit);
+</script>
+</body>
+</html>

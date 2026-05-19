@@ -1,0 +1,54 @@
+BLUESHIELD HEALTH PLANS — SUMMARY OF BENEFITS AND COVERAGE
+Plan: PPO Gold 2026 — Member ID prefix BSH-
+
+==========================================================================
+SECTION 7. DIAGNOSTIC TESTING — SLEEP DISORDERS
+==========================================================================
+
+7.1  COVERED SERVICES
+The following diagnostic services for suspected obstructive sleep apnea
+(OSA) are covered when ordered by a treating physician:
+
+  (a) Home Sleep Apnea Testing (HSAT) — CPT 95800, 95801, 95806.
+  (b) Attended In-Lab Polysomnography (PSG) — CPT 95810, 95811.
+  (c) Multiple Sleep Latency Testing — CPT 95805.
+
+7.2  MEDICAL NECESSITY CRITERIA FOR IN-LAB POLYSOMNOGRAPHY (CPT 95810)
+In-lab polysomnography is considered medically necessary when ANY of
+the following criteria are met:
+
+  (i)   The member has a comorbid condition that renders HSAT
+        unreliable, including but not limited to: moderate-to-severe
+        pulmonary disease, congestive heart failure (NYHA Class III
+        or IV), neuromuscular disease, or chronic opioid use.
+  (ii)  HSAT has been attempted and returned a non-diagnostic or
+        technically inadequate result.
+  (iii) The treating physician documents a clinical suspicion of a
+        non-respiratory sleep disorder (e.g., parasomnia, periodic
+        limb movement disorder, narcolepsy) that cannot be evaluated
+        by HSAT.
+  (iv)  The member is unable to operate HSAT equipment safely at home
+        due to cognitive or physical impairment.
+
+7.3  PRIOR AUTHORIZATION
+Prior authorization is NOT required for in-lab polysomnography when
+ordered by a board-certified sleep medicine physician, pulmonologist,
+or neurologist and one or more of the criteria in 7.2 are documented
+in the member's medical record.
+
+==========================================================================
+SECTION 12. APPEALS
+==========================================================================
+
+12.1  Members have 180 days from the date of an adverse benefit
+determination to file a first-level internal appeal. Appeals must be
+submitted in writing and should reference the claim number, the
+specific denial reason, and any clinical or contractual grounds for
+reversal.
+
+12.2  The plan will issue a written decision within 30 days of receipt
+of a complete appeal.
+
+==========================================================================
+END OF EXCERPT — Plan document continues in full Summary Plan Description.
+==========================================================================
