@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Insurance Appeal Agent</title>
+<link rel="icon" type="image/png" href="favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&family=Space+Mono&display=swap" rel="stylesheet" />
@@ -72,6 +73,20 @@
   .wrap { max-width: 1240px; margin: 0 auto; padding: 48px 24px 80px; }
 
   header { margin-bottom: 36px; }
+  .brand-lockup {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+  .brand-mark {
+    width: 44px; height: 44px;
+    object-fit: contain;
+  }
+  .brand-name {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    color: var(--navy);
+    letter-spacing: -0.015em;
+  }
   header .eyebrow {
     font-family: var(--font-mono);
     font-size: 12px;
@@ -333,7 +348,10 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="eyebrow">insurance appeal · agent</div>
+    <div class="brand-lockup">
+      <img src="logo.png" alt="Insurance Appeal Agent logo" class="brand-mark" />
+      <span class="brand-name">Insurance Appeal Agent</span>
+    </div>
     <h1>Turn a denial letter into a winning appeal.</h1>
     <p>Paste the denial, the policy, and the clinical record. An agent reads all three, finds the contradictions, and drafts the appeal letter with citations.</p>
   </header>
