@@ -504,9 +504,8 @@ Order date: 2026-04-10  |  Study performed: 2026-04-18`
       if (!res.ok || !json.ok) {
         throw new Error(json.error || ("HTTP " + res.status));
       }
-      // Jac walker envelope: { ok, data: { reports: [[report1, ...]] } }
-      const reports = (json.data && json.data.reports && json.data.reports[0]) || [];
-      const report = reports[0] || {};
+      // Jac walker envelope: { ok, data: { reports: [<report_dict>, ...] } }
+      const report = (json.data && json.data.reports && json.data.reports[0]) || {};
       render(report);
       setStatus("Done - appeal " + (report.appeal_id || "") + " saved.", "ok");
     } catch (e) {
