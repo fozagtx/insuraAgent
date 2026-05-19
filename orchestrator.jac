@@ -34,7 +34,7 @@ import from tools {
 def _pick_agent_model() -> Model {
     if os.environ.get("FEATHERLESS_API_KEY") {
         model_id = os.environ.get(
-            "APPEAL_MODEL", "openai/Qwen/Qwen2.5-72B-Instruct"
+            "APPEAL_MODEL", "openai/Qwen/Qwen2.5-14B-Instruct"
         );
         return Model(
             model_name=model_id,

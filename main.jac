@@ -2,17 +2,30 @@
 #
 #   jac run main.jac
 #
-# Reads the sample denial letter, policy document, and clinical record
-# from samples/, lets the agent plan and execute the appeal, and prints
-# the resulting letter. Requires ANTHROPIC_API_KEY or GEMINI_API_KEY.
+# Reads the bundled sample claim, runs the agent's 5 tools in sequence,
+# and prints the resulting appeal letter.
+#
+# Note: the agentic orchestrator (`orchestrator.jac::plan_and_generate_appeal`)
+# still exists and is what walkers.jac + the REST API expose — the LLM
+# picks tool order via `by llm(tools=[...])`. We use a sequential
+# tool pipeline here because Featherless's tool-calling support adds
+# significant latency to multi-turn ReAct loops, and a 60-second demo
+# matters more than the per-call autonomy. Same tools, same outputs.
 
 import os;
 import json;
+import time;
 import uuid;
 import datetime;
 
 import from models { Claim, Policy, Appeal, DenialReason, AppealStrength }
-import from orchestrator { plan_and_generate_appeal }
+import from tools {
+    extract_denial_reason,
+    extract_relevant_clauses,
+    find_contradictions,
+    assess_appeal_strength,
+    draft_appeal_letter
+}
 
 
 def _read(path: str) -> str {
@@ -31,16 +44,7 @@ def _check_keys() -> bool {
     if not (have_featherless or have_anthropic or have_gemini or have_openai) {
         print("=" * 72);
         print("ERROR: No LLM API key found in environment.");
-        print("");
-        print("  Pick one (Featherless is the default per jac.toml):");
-        print("    export FEATHERLESS_API_KEY=fl-...      # default model");
-        print("    export ANTHROPIC_API_KEY=sk-ant-...    # set jac.toml to");
-        print("                                           # claude-sonnet-4-20250514");
-        print("    export GEMINI_API_KEY=...              # set jac.toml to");
-        print("                                           # gemini/gemini-2.0-flash");
-        print("");
-        print("  First time on Featherless? Run the probe first:");
-        print("    jac run probe_featherless.jac");
+        print("  export FEATHERLESS_API_KEY=fl-...      (default, Featherless)");
         print("=" * 72);
         return False;
     }
@@ -56,6 +60,19 @@ def _banner(title: str) {
 }
 
 
+def _step(num: int, label: str) -> float {
+    print("");
+    print(f"  [step {num}/5] {label} ...");
+    return time.time();
+}
+
+
+def _done(t0: float) {
+    dt = time.time() - t0;
+    print(f"           done in {dt:.1f}s");
+}
+
+
 with entry {
     if not _check_keys() {
         # exit cleanly
@@ -65,16 +82,17 @@ with entry {
         policy_text     = _read("samples/policy_001.txt");
         clinical_record = _read("samples/patient_record_001.txt");
 
-        _banner("INSURANCE APPEAL AGENT — CLI DEMO");
+        _banner("INSURANCE APPEAL AGENT  -  CLI DEMO");
         print("Sample claim:        CLM-2026-0418-9921");
         print("CPT code:            95810 (in-lab polysomnography)");
         print("Billed amount:       $3,847.00");
         print("Plan:                BlueShield PPO Gold 2026");
         print("Denial reason given: Not medically necessary");
         print("");
-        print("Handing off to the agent. It will plan its own tool order...");
+        print("The agent has 5 tools. Each one is a `def ... by llm()`");
+        print("call in tools.jac. Watch them run.");
 
-        # ---- 2. Persist the Claim + Policy on the root graph ----------
+        # ---- 2. Persist Claim + Policy on root graph ------------------
         claim = Claim(
             claim_id="CLM-2026-0418-9921",
             patient_name="Jordan A. Reyes",
@@ -93,28 +111,59 @@ with entry {
         root ++> claim;
         root ++> policy;
 
-        # ---- 3. Agent: plan and execute the appeal --------------------
-        letter = plan_and_generate_appeal(
-            denial_text=denial_text,
-            policy_text=policy_text,
-            clinical_record=clinical_record,
+        wall_start = time.time();
+
+        # ---- 3. The 5 tool calls --------------------------------------
+        t = _step(1, "classify the denial reason");
+        reason = extract_denial_reason(denial_text);
+        print(f"           -> {reason}");
+        _done(t);
+
+        t = _step(2, "extract relevant policy clauses");
+        clauses = extract_relevant_clauses(policy_text, reason);
+        print(f"           -> {len(clauses)} clauses extracted");
+        _done(t);
+
+        t = _step(3, "find contradictions between denial and policy");
+        contradictions = find_contradictions(denial_text, clinical_record, clauses);
+        print(f"           -> {len(contradictions)} contradictions found");
+        _done(t);
+
+        t = _step(4, "assess overall appeal strength");
+        strength = assess_appeal_strength(contradictions);
+        print(f"           -> {strength}");
+        _done(t);
+
+        t = _step(5, "draft the appeal letter");
+        letter = draft_appeal_letter(
             patient_name="Jordan A. Reyes",
             member_id="BSH-44892-01",
             claim_number="CLM-2026-0418-9921",
             date_of_service="2026-04-18",
             cpt_code="95810",
             billed_amount=3847.00,
-            plan_name="BlueShield PPO Gold 2026"
+            plan_name="BlueShield PPO Gold 2026",
+            denial_reason=reason,
+            contradictions=contradictions,
+            clinical_record=clinical_record
         );
+        _done(t);
 
-        # ---- 4. Persist the Appeal node -------------------------------
+        total_dt = time.time() - wall_start;
+
+        # ---- 4. Persist Appeal node -----------------------------------
         appeal = Appeal(
             appeal_id=f"APL-{uuid.uuid4().hex[:8]}",
             claim_id=claim.claim_id,
             policy_id=policy.policy_id,
-            denial_reason=DenialReason.NOT_MEDICALLY_NECESSARY,
-            strength=AppealStrength.STRONG,
-            contradictions_json="[]",
+            denial_reason=reason,
+            strength=strength,
+            contradictions_json=json.dumps(
+                [{"denial_quote": c.denial_quote,
+                  "policy_quote": c.policy_quote,
+                  "clause_section": c.clause_section,
+                  "explanation": c.explanation} for c in contradictions]
+            ),
             letter_subject=letter.subject,
             letter_body=f"{letter.salutation}\n\n{letter.body}\n\n{letter.closing}",
             citations_json=json.dumps(letter.citations),
@@ -122,7 +171,7 @@ with entry {
         );
         root ++> appeal;
 
-        # ---- 5. Render the appeal -------------------------------------
+        # ---- 5. Render -------------------------------------------------
         _banner("GENERATED APPEAL LETTER");
         print(f"Subject: {letter.subject}");
         print("");
@@ -134,7 +183,7 @@ with entry {
 
         _banner("CITATIONS");
         for c in letter.citations {
-            print(f"  • {c}");
+            print(f"  - {c}");
         }
 
         _banner("PERSISTED ON GRAPH");
@@ -143,6 +192,7 @@ with entry {
         print(f"  Policy ID:  {appeal.policy_id}");
         print(f"  Created at: {appeal.created_at}");
         print("");
-        print("(These nodes persist on root and survive subsequent `jac run`s.)");
+        print(f"  Total agent time: {total_dt:.1f}s across 5 tool calls");
+        print("(Nodes persist on root and survive subsequent `jac run`s.)");
     }
 }

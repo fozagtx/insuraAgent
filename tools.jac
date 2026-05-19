@@ -21,7 +21,7 @@ import from models { DenialReason, PolicyClause, Contradiction, AppealLetter, Ap
 
 # -------------------- model selection --------------------
 # Preference order:
-#   1. FEATHERLESS_API_KEY -> Qwen2.5-72B via OpenAI-compat route (free demo)
+#   1. FEATHERLESS_API_KEY -> Qwen2.5-14B via OpenAI-compat route (free demo)
 #   2. ANTHROPIC_API_KEY   -> Claude Sonnet 4
 #   3. GEMINI_API_KEY      -> Gemini 2.5 Flash
 #   4. OPENAI_API_KEY      -> gpt-4o-mini
@@ -34,7 +34,7 @@ import from models { DenialReason, PolicyClause, Contradiction, AppealLetter, Ap
 def _pick_model() -> Model {
     if os.environ.get("FEATHERLESS_API_KEY") {
         model_id = os.environ.get(
-            "APPEAL_MODEL", "openai/Qwen/Qwen2.5-72B-Instruct"
+            "APPEAL_MODEL", "openai/Qwen/Qwen2.5-14B-Instruct"
         );
         return Model(
             model_name=model_id,
@@ -147,14 +147,38 @@ def _parse_json_list(s: str) -> list {
 
 
 # ---- TOOL 1: classify the denial reason ---------------------------------
-# Enum return — round-trips cleanly on every backend, no JSON wrapper needed.
+# Was an enum return — Featherless/vLLM rejects byLLM's empty json_schema
+# envelope on enums same as on typed objs, so we return a plain str and
+# match it to the enum in Python.
 
 """
 Read a health-insurance denial letter and identify the single primary reason
-the claim was denied. Be conservative: pick OTHER if the letter does not
-clearly fit one of the named categories.
+the claim was denied. Return EXACTLY ONE of these strings (uppercase, no
+quotes, no extra text):
+
+  NOT_MEDICALLY_NECESSARY
+  OUT_OF_NETWORK
+  PRIOR_AUTH_MISSING
+  EXPERIMENTAL_OR_INVESTIGATIONAL
+  CODING_ERROR
+  BENEFIT_EXCLUSION
+  OTHER
+
+Be conservative: pick OTHER if the letter does not clearly fit one of the
+named categories.
 """
-def extract_denial_reason(denial_text: str) -> DenialReason by llm();
+def extract_denial_reason_raw(denial_text: str) -> str by llm();
+
+def extract_denial_reason(denial_text: str) -> DenialReason {
+    raw = extract_denial_reason_raw(denial_text).strip().upper();
+    if "NOT_MEDICALLY_NECESSARY" in raw { return DenialReason.NOT_MEDICALLY_NECESSARY; }
+    if "OUT_OF_NETWORK" in raw { return DenialReason.OUT_OF_NETWORK; }
+    if "PRIOR_AUTH" in raw { return DenialReason.PRIOR_AUTH_MISSING; }
+    if "EXPERIMENTAL" in raw or "INVESTIGATIONAL" in raw { return DenialReason.EXPERIMENTAL_OR_INVESTIGATIONAL; }
+    if "CODING" in raw { return DenialReason.CODING_ERROR; }
+    if "BENEFIT_EXCLUSION" in raw or "EXCLUSION" in raw { return DenialReason.BENEFIT_EXCLUSION; }
+    return DenialReason.OTHER;
+}
 
 
 # ---- TOOL 2: extract the policy clauses relevant to that reason ---------
@@ -244,16 +268,33 @@ def find_contradictions(
 
 
 # ---- TOOL 4: assess appeal strength ------------------------------------
-# Enum return — stays as-is.
+# Was an enum return — same Featherless schema bug. Now str + parse.
 
 """
 Based on the contradictions found, classify how strong the appeal is.
+Return EXACTLY ONE of these strings (uppercase, no quotes, no extra text):
+
+  WEAK
+  MODERATE
+  STRONG
+  VERY_STRONG
+
 STRONG/VERY_STRONG requires multiple clearly-cited contradictions backed
 by clinical evidence.
 """
+def assess_appeal_strength_raw(
+    contradictions: list[Contradiction]
+) -> str by llm();
+
 def assess_appeal_strength(
     contradictions: list[Contradiction]
-) -> AppealStrength by llm();
+) -> AppealStrength {
+    raw = assess_appeal_strength_raw(contradictions).strip().upper();
+    if "VERY_STRONG" in raw or "VERY STRONG" in raw { return AppealStrength.VERY_STRONG; }
+    if "STRONG" in raw { return AppealStrength.STRONG; }
+    if "WEAK" in raw { return AppealStrength.WEAK; }
+    return AppealStrength.MODERATE;
+}
 
 
 # ---- TOOL 5: compose the actual appeal letter --------------------------

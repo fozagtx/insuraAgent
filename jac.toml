@@ -2,7 +2,7 @@
 # Featherless via OpenAI-compat route (more reliable than featherless_ai/ prefix
 # for structured-output / typed returns). Requires OPENAI_API_BASE +
 # OPENAI_API_KEY env vars — see run_demo.sh or README.
-default_model = "openai/Qwen/Qwen2.5-72B-Instruct"
+default_model = "openai/Qwen/Qwen2.5-14B-Instruct"
 
 [plugins.client]
 
