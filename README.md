@@ -1,6 +1,6 @@
 # Insurance Appeal Agent
 
-**JacHacks Spring 2026 — Consumer Healthcare track**
+**JacHacks Spring 2026 - Consumer Healthcare track**
 
 An agentic AI that reads a health-insurance denial letter and the patient's
 policy document and autonomously drafts a personalized, citation-backed
@@ -15,8 +15,8 @@ appeal letter. Written in [Jac](https://docs.jaseci.org/) with byLLM.
 
 ## What it does
 
-Given three text inputs — the **denial letter**, the **policy document**,
-and the patient's **clinical record** — the agent:
+Given three text inputs - the **denial letter**, the **policy document**,
+and the patient's **clinical record** - the agent:
 
 1. **Classifies** the denial reason into a structured category
    (`NOT_MEDICALLY_NECESSARY`, `OUT_OF_NETWORK`, `PRIOR_AUTH_MISSING`,
@@ -40,7 +40,7 @@ single LLM-typed function with **five tools registered** via
 `by llm(tools=[...])`. The LLM decides on its own which tool to call
 first, what to feed back into the next call, and when it has enough
 information to produce the final `AppealLetter`. No hand-written
-`if/elif/then` pipeline — byLLM runs the full ReAct loop under the
+`if/elif/then` pipeline - byLLM runs the full ReAct loop under the
 hood. This is what the REST walker (`/walker/submit_claim`) exposes.
 
 A judge can grep `orchestrator.jac` for `tools=[` to see the agentic
@@ -56,7 +56,7 @@ and persisted graph are identical either way.
 
 ## Track
 
-**Consumer Healthcare** ($600 first prize) — denied health-insurance
+**Consumer Healthcare** ($600 first prize) - denied health-insurance
 claims are a massive consumer-healthcare pain point: average appeal
 takes 5–10 hours of unpaid patient work and most people simply give up.
 
@@ -67,10 +67,10 @@ takes 5–10 hours of unpaid patient work and most people simply give up.
 | File | Role |
 |---|---|
 | `models.jac` | `node` types (Claim, Policy, Appeal), enums (DenialReason, AppealStrength), structured value objects (PolicyClause, Contradiction, AppealLetter). |
-| `tools.jac` | The 5 LLM-typed tools — `extract_denial_reason`, `extract_relevant_clauses`, `find_contradictions`, `assess_appeal_strength`, `draft_appeal_letter`. |
-| `orchestrator.jac` | The agentic core — one `by llm(tools=[...])` call that lets the LLM plan and dispatch the five tools. |
+| `tools.jac` | The 5 LLM-typed tools - `extract_denial_reason`, `extract_relevant_clauses`, `find_contradictions`, `assess_appeal_strength`, `draft_appeal_letter`. |
+| `orchestrator.jac` | The agentic core - one `by llm(tools=[...])` call that lets the LLM plan and dispatch the five tools. |
 | `main.jac` | CLI demo. Calls the five tools **sequentially** for a fast, reliable on-stage demo (~80s wall-clock). |
-| `walkers.jac` | REST surface — `submit_claim` and `list_appeals` walkers. `submit_claim` calls the **agentic orchestrator**, not the sequential path. |
+| `walkers.jac` | REST surface - `submit_claim` and `list_appeals` walkers. `submit_claim` calls the **agentic orchestrator**, not the sequential path. |
 | `app.jac` + `frontend.cl.jac` | Single-file Jac-native React UI mounted on the same server. |
 | `web/index.html` | Optional static drag-and-drop UI that talks to the REST endpoints. |
 
@@ -96,7 +96,7 @@ jac --version
 ## Set an API key
 
 This project runs on **[Featherless.AI](https://featherless.ai)** by default
-— a serverless inference platform for open-weight models. Get a key at
+- a serverless inference platform for open-weight models. Get a key at
 https://featherless.ai/account/api-keys.
 
 ```bash
@@ -119,7 +119,7 @@ export OPENAI_API_BASE="https://api.featherless.ai/v1"
 ```
 
 > **First time on Featherless?** Run the 60-second compatibility probe
-> first — it confirms typed-object schemas round-trip on your chosen
+> first - it confirms typed-object schemas round-trip on your chosen
 > model before you fire the full agent:
 >
 > ```bash
@@ -180,7 +180,7 @@ all five tool calls on the default Qwen 14B backend.
 jac start app.jac --port 8001
 ```
 
-Port 8001 is deliberate — the default 8000 collides with a sibling
+Port 8001 is deliberate - the default 8000 collides with a sibling
 project on the same machine; override with `--port` if you don't have
 that conflict. `app.jac` brings in `walkers.jac` so both endpoints
 are mounted on the same server alongside the Jac-native React UI.
@@ -189,7 +189,7 @@ Two walker endpoints come up:
 
 ### `POST /walker/submit_claim`
 
-Runs the **agentic orchestrator** (the `by llm(tools=[...])` call —
+Runs the **agentic orchestrator** (the `by llm(tools=[...])` call -
 LLM picks tool order), persists Claim / Policy / Appeal nodes, and
 returns the drafted letter.
 
@@ -218,7 +218,7 @@ Response:
 {
   "appeal_id": "APL-...",
   "claim_id": "CLM-2026-0418-9921",
-  "subject": "Formal Appeal — Claim CLM-2026-0418-9921 ...",
+  "subject": "Formal Appeal - Claim CLM-2026-0418-9921 ...",
   "letter": "Dear Appeals Department, ...",
   "citations": ["Plan Section 7.2(i)", "..."]
 }
@@ -239,7 +239,7 @@ After starting the server with `jac start app.jac --port 8001`, open
 `web/index.html` directly in a browser. Click **Load sample claim**,
 then **Generate appeal**.
 
-The page is a single static HTML file — no build step, no Node.
+The page is a single static HTML file - no build step, no Node.
 
 > Depending on your browser's CORS policy you may need to serve `web/`
 > with a static server (`python3 -m http.server -d web 5500`) rather
@@ -252,12 +252,12 @@ The page is a single static HTML file — no build step, no Node.
 
 Input lives in `samples/`:
 
-- `samples/denial_001.txt` — a fictional BlueShield denial for an
+- `samples/denial_001.txt` - a fictional BlueShield denial for an
   in-lab sleep study (CPT 95810), reason: "HSAT not attempted first."
-- `samples/policy_001.txt` — the relevant PPO Gold plan section that
+- `samples/policy_001.txt` - the relevant PPO Gold plan section that
   **waives** the HSAT-first requirement when the patient has NYHA
   Class III CHF or is on chronic opioids.
-- `samples/patient_record_001.txt` — clinical note documenting the
+- `samples/patient_record_001.txt` - clinical note documenting the
   patient has *both* conditions.
 
 The agent connects all three: the denial is wrong because the policy's
@@ -273,8 +273,8 @@ appeal quotes the policy back to the insurer.
 | `node` types with auto-persistence on `root` | `models.jac` | Claim / Policy / Appeal survive across runs |
 | `enum` types as LLM return values | `models.jac` `DenialReason`, `AppealStrength` | Constrains LLM output to schema-valid categories (Python-side match for Featherless compat) |
 | `obj` types as LLM return values | `models.jac` `PolicyClause`, `Contradiction`, `AppealLetter` | Forces structured output instead of free-form text |
-| `def foo(...) -> T by llm()` | `tools.jac` | Every tool is one line — no JSON-parsing boilerplate |
-| `def foo(...) -> T by llm(tools=[...])` | `orchestrator.jac` | The agentic call — LLM picks tool order |
+| `def foo(...) -> T by llm()` | `tools.jac` | Every tool is one line - no JSON-parsing boilerplate |
+| `def foo(...) -> T by llm(tools=[...])` | `orchestrator.jac` | The agentic call - LLM picks tool order |
 | `walker:pub ... { has ...; can run with Root entry { ... } }` | `walkers.jac` | Becomes a public REST endpoint |
 | `here ++> Node(...)` | `walkers.jac`, `main.jac` | Persistent graph edges from root |
 | `[-->[?:Appeal]]` filtered traversal | `walkers.jac` `list_appeals` | Type-safe graph query |
@@ -291,7 +291,7 @@ insurance-appeal-agent/
 ├── tools.jac             # 5 LLM-typed tools
 ├── orchestrator.jac      # 1 agentic `by llm(tools=[...])` call
 ├── walkers.jac           # REST endpoints (submit_claim, list_appeals)
-├── app.jac               # server entry — mounts walkers + Jac React UI
+├── app.jac               # server entry - mounts walkers + Jac React UI
 ├── frontend.cl.jac       # Jac-native React frontend (single file)
 ├── main.jac              # CLI demo (sequential tool pipeline)
 ├── probe_featherless.jac # 60-second backend compatibility check
@@ -308,7 +308,7 @@ insurance-appeal-agent/
 ## Disclaimer
 
 This tool is a hackathon prototype. The sample data is **fictional**
-(names, member IDs, claim numbers, providers — all invented). The
+(names, member IDs, claim numbers, providers - all invented). The
 generated appeal letter is **not legal advice**. Real appeals should be
 reviewed by a human (patient advocate, attorney, or the patient
 themselves) before submission. Different plans have different appeal
@@ -326,7 +326,7 @@ jac start app.jac --port 8001
 
 Then open the printed URL. The UI lives in `frontend.cl.jac` (one
 file, React JSX inline) and spawns the same `submit_claim` /
-`list_appeals` walkers via Jac's in-browser `root spawn` runtime — no
+`list_appeals` walkers via Jac's in-browser `root spawn` runtime - no
 hand-rolled `fetch()`, no separate JS build pipeline, no REST glue.
 The whole stack (data model · agentic orchestrator · walker API ·
 React UI) is `.jac` files. Click *Load sample claim* → *Generate

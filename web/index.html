@@ -9,12 +9,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&family=Space+Mono&display=swap" rel="stylesheet" />
 <style>
   :root {
-    /* fonts — Instrument family */
+    /* fonts - Instrument family */
     --font-sans: 'Instrument Sans', system-ui, -apple-system, sans-serif;
     --font-serif: 'Instrument Serif', Georgia, serif;
     --font-mono: 'Space Mono', ui-monospace, Menlo, monospace;
 
-    /* brand — navy + blue + sky */
+    /* brand - navy + blue + sky */
     --navy: #002259;
     --blue-700: #2670DC;
     --blue-600: #155DFC;
@@ -111,6 +111,7 @@
   /* neumorphic pane */
   .pane {
     background: var(--skeleton);
+    border: 1.5px solid #000;
     border-radius: var(--r-xl);
     box-shadow: var(--shadow-card);
     padding: 28px 30px;
@@ -211,7 +212,7 @@
     transform: translateY(-1px);
   }
 
-  /* primary CTA — 4-stop blue gradient */
+  /* primary CTA - 4-stop blue gradient */
   .btn-primary {
     background: var(--cta-gradient);
     color: white;
@@ -415,7 +416,7 @@
 </div>
 
 <script>
-  const API = "http://localhost:8000";
+  const API = "http://localhost:8001";
 
   // Sample text bundled inline so the demo works offline-of-disk.
   const SAMPLE = {
@@ -426,7 +427,7 @@
     cpt:     "95810",
     amount:  "3847.00",
     plan:    "BlueShield PPO Gold 2026",
-    denial: `BlueShield Health Plans — May 2, 2026
+    denial: `BlueShield Health Plans - May 2, 2026
 
 Claim CLM-2026-0418-9921 for in-lab polysomnography (CPT 95810) is
 DENIED. Reason M-114: NOT MEDICALLY NECESSARY. Clinical documentation
@@ -434,7 +435,7 @@ does not establish that home sleep apnea testing (HSAT) was attempted
 and failed prior to the in-lab study. Per our clinical policy, in-lab
 polysomnography is reserved for cases where HSAT is contraindicated or
 has been attempted and returned a non-diagnostic result.`,
-    policy: `BLUESHIELD PPO GOLD 2026 — Section 7.2
+    policy: `BLUESHIELD PPO GOLD 2026 - Section 7.2
 MEDICAL NECESSITY CRITERIA FOR IN-LAB POLYSOMNOGRAPHY (CPT 95810)
 
 In-lab polysomnography is considered medically necessary when ANY of
@@ -507,7 +508,7 @@ Order date: 2026-04-10  |  Study performed: 2026-04-18`
       const reports = (json.data && json.data.reports && json.data.reports[0]) || [];
       const report = reports[0] || {};
       render(report);
-      setStatus("Done — appeal " + (report.appeal_id || "") + " saved.", "ok");
+      setStatus("Done - appeal " + (report.appeal_id || "") + " saved.", "ok");
     } catch (e) {
       setStatus("Error: " + e.message, "warn");
       document.getElementById("output").innerHTML =
