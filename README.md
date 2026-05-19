@@ -1,6 +1,10 @@
-# Insurance Appeal Agent
+<p align="center">
+  <img src="web/logo.png" alt="Insurance Appeal Agent" width="140" />
+</p>
 
-**JacHacks Spring 2026 - Consumer Healthcare track**
+<h1 align="center">Insurance Appeal Agent</h1>
+
+<p align="center"><strong>JacHacks Spring 2026 · Consumer Healthcare track</strong></p>
 
 An agentic AI that reads a health-insurance denial letter and the patient's
 policy document and autonomously drafts a personalized, citation-backed
